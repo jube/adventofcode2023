@@ -1,0 +1,26 @@
+def sum = 0
+def line
+
+while (line = IO.input()) {
+
+  def first = true
+  def ith = 0
+  def value0
+  def value1
+
+  for (c in line) {
+    if ('0' <= c && c <= '9') {
+      if (first) {
+        value0 = c.to_s.to_i
+        first = false
+      }
+
+      value1 = c.to_s.to_i
+    }
+  }
+
+  def value = value0 * 10 + value1
+  sum = sum + value
+}
+
+IO.println(sum)

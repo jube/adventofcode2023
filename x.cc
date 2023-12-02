@@ -1,7 +1,10 @@
+#include <cassert>
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <numeric>
 #include <string>
+#include <tuple>
 #include <vector>
 
 int main() {

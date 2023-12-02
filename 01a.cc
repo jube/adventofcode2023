@@ -17,7 +17,6 @@ int main() {
     bool first = true;
     int value0 = 0;
     int value1 = 0;
-    std::size_t ith = 0;
 
     for (char c : line) {
       if ('0' <= c && c <= '9') {
@@ -31,7 +30,7 @@ int main() {
     }
 
     int value = value0 * 10 + value1;
-    std::cout << value0 << ' ' << value1 << ' ' << value << '\n';
+    // std::cout << value0 << ' ' << value1 << ' ' << value << '\n';
     sum += value;
   }
 

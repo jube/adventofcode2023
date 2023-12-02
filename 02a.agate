@@ -1,0 +1,42 @@
+def id = 1
+def sum = 0
+def line
+
+while (line = IO.input()) {
+  def parts = line.split(':')
+  def sets = parts[1].split(';')
+  def possible = true
+
+  for (set in sets) {
+    def colored = set.split(',')
+
+    def red = 0
+    def green = 0
+    def blue = 0
+
+    for (cube in colored) {
+      cube = cube.trim().split(' ')
+#       IO.println("%(cube[0])|%(cube[1])")
+
+      if (cube[1] == "red") {
+        red = red + cube[0].to_i
+      } else if (cube[1] == "green") {
+        green = green + cube[0].to_i
+      } else if (cube[1] == "blue") {
+        blue = blue + cube[0].to_i
+      }
+
+      if (red > 12 || green > 13 || blue > 14) {
+        possible = false
+      }
+    }
+  }
+
+  if (possible) {
+    sum = sum + id
+  }
+
+  id = id + 1
+}
+
+IO.println(sum)
