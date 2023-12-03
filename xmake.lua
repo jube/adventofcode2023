@@ -21,3 +21,19 @@ target("02a")
 target("02b")
     set_kind("binary")
     add_files("02b.cc")
+
+target("03a")
+    set_kind("binary")
+    add_files("03a.cc")
+
+target("03b")
+    set_kind("binary")
+    add_files("03b.cc")
+
+target("04a")
+    set_kind("binary")
+    add_files("04a.cc")
+
+target("04b")
+    set_kind("binary")
+    add_files("04b.cc")
