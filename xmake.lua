@@ -37,3 +37,11 @@ target("04a")
 target("04b")
     set_kind("binary")
     add_files("04b.cc")
+
+target("05a")
+    set_kind("binary")
+    add_files("05a.cc")
+
+target("05b")
+    set_kind("binary")
+    add_files("05b.cc")
