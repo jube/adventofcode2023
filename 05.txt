@@ -1,21 +1,7 @@
-#include <cassert>
-#include <cstdint>
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <limits>
-#include <map>
-#include <numeric>
-#include <optional>
-#include <set>
-#include <string>
-#include <tuple>
-#include <vector>
+seeds: 858905075 56936593 947763189 267019426 206349064 252409474 660226451 92561087 752930744 24162055 75704321 63600948 3866217991 323477533 3356941271 54368890 1755537789 475537300 1327269841 427659734
 
-constexpr std::string_view raw_seeds = "858905075 56936593 947763189 267019426 206349064 252409474 660226451 92561087 752930744 24162055 75704321 63600948 3866217991 323477533 3356941271 54368890 1755537789 475537300 1327269841 427659734";
-
-constexpr std::string_view raw_seed_to_soil_map =
-R"(155461856 2688731658 31130392
+seed-to-soil map:
+155461856 2688731658 31130392
 3624223750 2439220990 158522039
 3782745789 828496007 83184667
 1329508120 2383184162 2195641
@@ -59,10 +45,9 @@ R"(155461856 2688731658 31130392
 4098628507 582786647 47545686
 2207365554 3625687946 338022451
 2688121701 580712248 2074399
-)";
 
-constexpr std::string_view raw_soil_to_fertilizer_map =
-R"(2233530624 2071120505 422489795
+soil-to-fertilizer map:
+2233530624 2071120505 422489795
 3959649465 4044567411 67616189
 457224864 3135270167 41569374
 3394360972 4112183600 182783696
@@ -84,10 +69,9 @@ R"(2233530624 2071120505 422489795
 3804835832 3851273319 154813633
 1332437026 2006681616 64438889
 0 837436567 403686946
-)";
 
-constexpr std::string_view raw_fertilizer_to_water_map =
-R"(490664090 841327865 158559818
+fertilizer-to-water map:
+490664090 841327865 158559818
 3248785910 3009217852 86780947
 3361383178 811709798 29618067
 1492567300 999887683 10142868
@@ -127,10 +111,9 @@ R"(490664090 841327865 158559818
 1031051374 1834655034 60491940
 1489637335 2477572850 2929965
 2251004579 3095998799 166685059
-)";
 
-constexpr std::string_view raw_water_to_light_map =
-R"(2001282667 520918173 10302354
+water-to-light map:
+2001282667 520918173 10302354
 2377955968 3484205484 30954740
 3394017453 2582587136 46684978
 99573517 443623963 59355616
@@ -173,10 +156,9 @@ R"(2001282667 520918173 10302354
 468536763 0 153460510
 4235718558 2373434932 59248738
 2116439287 3515160224 106747554
-)";
 
-constexpr std::string_view raw_light_to_temperature_map =
-R"(1588027222 1909294051 23480302
+light-to-temperature map:
+1588027222 1909294051 23480302
 2215874455 2960213648 162391531
 2129487527 3462600798 86386928
 3484568571 1932774353 37497788
@@ -210,10 +192,9 @@ R"(1588027222 1909294051 23480302
 317763240 179225902 7517599
 2378265986 3548987726 181724264
 1907590282 3458757079 3843719
-)";
 
-constexpr std::string_view raw_temperature_to_humidity_map =
-R"(2368894659 1388350150 55368176
+temperature-to-humidity map:
+2368894659 1388350150 55368176
 3669222180 3739392779 16773160
 4199646729 3863166637 79873794
 399562411 1508754364 89530529
@@ -258,10 +239,9 @@ R"(2368894659 1388350150 55368176
 1938583676 220766760 125378624
 3996781664 4163246259 131721037
 3156115308 1444269128 64485236
-)";
 
-constexpr std::string_view raw_humidity_to_location_map =
-R"(2420477851 2725678119 154870744
+humidity-to-location map:
+2420477851 2725678119 154870744
 341010579 1968896618 161603351
 2771047693 3040747240 63786420
 1473264654 231223255 158065928
@@ -295,165 +275,4 @@ R"(2420477851 2725678119 154870744
 593882556 705484119 648158843
 3871554698 3932373353 42274873
 2998499327 1650316948 79272282
-)";
 
-namespace {
-
-  bool is_delimiter(char c, std::string_view delimiters)
-  {
-    return std::any_of(delimiters.begin(), delimiters.end(), [c](char d) { return c == d; });
-  }
-
-  std::vector<std::string_view> split_string(std::string_view string, std::string_view delimiters)
-  {
-    const std::size_t size = string.size();
-    std::size_t i = 0;
-    std::vector<std::string_view> result;
-
-    while (i < size) {
-      while (i < size && is_delimiter(string[i], delimiters)) {
-        ++i;
-      }
-
-      if (i == size) {
-        break;
-      }
-
-      const char* start = string.data() + i;
-      size_t length = 0;
-
-      while (i < size && !is_delimiter(string[i], delimiters)) {
-        ++i;
-        ++length;
-      }
-
-      result.emplace_back(start, length);
-    }
-
-    return result;
-  }
-
-  struct RangeMapping {
-    uint64_t destination_start;
-    uint64_t source_start;
-    uint64_t length;
-  };
-
-  std::vector<RangeMapping> create_mapping(std::string_view raw)
-  {
-    auto ranges = split_string(raw, "\n");
-
-    std::vector<RangeMapping> mapping;
-
-    for (auto range : ranges) {
-      auto parts = split_string(range, " ");
-      assert(parts.size() == 3);
-
-      RangeMapping range_mapping;
-      range_mapping.destination_start = std::stoull(std::string(parts[0]));
-      range_mapping.source_start = std::stoull(std::string(parts[1]));
-      range_mapping.length = std::stoull(std::string(parts[2]));
-
-      mapping.emplace_back(range_mapping);
-    }
-
-    return mapping;
-  }
-
-  struct SeedMapping {
-    uint64_t start;
-    uint64_t length;
-  };
-
-  std::optional<SeedMapping> intersection_transform(SeedMapping seed, RangeMapping range) {
-    if (seed.start <= range.source_start) {
-      if (seed.start + seed.length <= range.source_start) {
-        return std::nullopt;
-      }
-
-      if (seed.start + seed.length <= range.source_start + range.length) {
-        // only the first part of range is mapped
-        return SeedMapping{ range.destination_start, seed.length - (range.source_start - seed.start) };
-      }
-
-      // the whole range is mapped
-      return SeedMapping{ range.destination_start, range.length };
-    }
-
-    if (seed.start < range.source_start + range.length) {
-      if (seed.start + seed.length <= range.source_start + range.length) {
-        // only middle part
-        return SeedMapping{ range.destination_start + (seed.start - range.source_start), seed.length };
-      }
-
-      // only last part
-      return SeedMapping{ range.destination_start + (seed.start - range.source_start), range.length - (seed.start - range.source_start) };
-    }
-
-    return std::nullopt;
-  }
-
-  std::vector<SeedMapping> map_seeds(const std::vector<SeedMapping>& origin, const std::vector<RangeMapping>& mapping)
-  {
-    std::vector<SeedMapping> destination;
-
-    for (auto seed_range : origin) {
-      for (auto& range : mapping) {
-        if (auto maybe_intersection = intersection_transform(seed_range, range)) {
-          destination.push_back(*maybe_intersection);
-        }
-      }
-    }
-    return destination;
-  }
-
-        // if (range.source_start <= number && number < range.source_start + range.length) {
-        //   number = number - range.source_start + range.destination_start;
-        //   break;
-        // }
-
-}
-
-int main() {
-
-  std::vector<RangeMapping> mappings[] = {
-    create_mapping(raw_seed_to_soil_map),
-    create_mapping(raw_soil_to_fertilizer_map),
-    create_mapping(raw_fertilizer_to_water_map),
-    create_mapping(raw_water_to_light_map),
-    create_mapping(raw_light_to_temperature_map),
-    create_mapping(raw_temperature_to_humidity_map),
-    create_mapping(raw_humidity_to_location_map),
-  };
-
-  auto seeds = split_string(raw_seeds, " ");
-  auto seed_count = seeds.size();
-  assert(seed_count % 2 == 0);
-
-  uint64_t min = std::numeric_limits<uint64_t>::max();
-
-  for (std::size_t i = 0; i < seed_count; i += 2) {
-    SeedMapping seed;
-    seed.start = std::stoull(std::string(seeds[i]));
-    seed.length = std::stoull(std::string(seeds[i + 1]));
-
-    std::vector<SeedMapping> seed_mapping = { seed };
-
-    std::cout << "##########\n";
-    for (auto &seed_range : seed_mapping) { std::cout << "- Start: " << seed_range.start << " Length: " << seed_range.length << '\n'; }
-
-    for (auto& mapping : mappings) {
-      seed_mapping = map_seeds(seed_mapping, mapping);
-      std::cout << "---------\n";
-      for (auto &seed_range : seed_mapping) { std::cout << "- Start: " << seed_range.start << " Length: " << seed_range.length << '\n'; }
-    }
-
-    for (auto seed_range : seed_mapping) {
-      if (seed_range.start < min) {
-        min = seed_range.start;
-      }
-    }
-  }
-
-  std::cout << "Min: " << min << '\n';
-}
