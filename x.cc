@@ -1,7 +1,9 @@
 #include <cassert>
+#include <cstdint>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <map>
 #include <numeric>
 #include <set>

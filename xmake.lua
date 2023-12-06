@@ -45,3 +45,11 @@ target("05a")
 target("05b")
     set_kind("binary")
     add_files("05b.cc")
+
+target("06a")
+    set_kind("binary")
+    add_files("06a.cc")
+
+target("06b")
+    set_kind("binary")
+    add_files("06b.cc")
