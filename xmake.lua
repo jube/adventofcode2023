@@ -90,3 +90,11 @@ target("10b")
 target("10display")
     set_kind("binary")
     add_files("10display.cc")
+
+target("11a")
+    set_kind("binary")
+    add_files("11a.cc")
+
+target("11b")
+    set_kind("binary")
+    add_files("11b.cc")
