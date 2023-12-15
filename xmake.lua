@@ -122,3 +122,11 @@ target("14a")
 target("14b")
     set_kind("binary")
     add_files("14b.cc")
+
+target("15a")
+    set_kind("binary")
+    add_files("15a.cc")
+
+target("15b")
+    set_kind("binary")
+    add_files("15b.cc")
