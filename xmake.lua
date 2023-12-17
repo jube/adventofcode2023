@@ -1,6 +1,8 @@
 set_project("adventofcode")
 set_version("2023")
 
+add_requires("boost")
+
 set_policy("build.warning", true)
 set_symbols("debug")
 set_warnings("allextra")
@@ -138,3 +140,13 @@ target("16a")
 target("16b")
     set_kind("binary")
     add_files("16b.cc")
+
+target("17a")
+    set_kind("binary")
+    add_files("17a.cc")
+    add_packages("boost")
+
+target("17b")
+    set_kind("binary")
+    add_files("17b.cc")
+    add_packages("boost")
