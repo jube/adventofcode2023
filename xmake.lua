@@ -160,3 +160,11 @@ target("18b")
     set_kind("binary")
     add_files("18b.cc")
     add_packages("boost")
+
+target("19a")
+    set_kind("binary")
+    add_files("19a.cc")
+
+target("19b")
+    set_kind("binary")
+    add_files("19b.cc")
