@@ -168,3 +168,15 @@ target("19a")
 target("19b")
     set_kind("binary")
     add_files("19b.cc")
+
+target("20a")
+    set_kind("binary")
+    add_files("20a.cc")
+
+target("20b")
+    set_kind("binary")
+    add_files("20b.cc")
+
+target("20c")
+    set_kind("binary")
+    add_files("20c.cc")
