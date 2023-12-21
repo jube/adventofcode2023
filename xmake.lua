@@ -180,3 +180,11 @@ target("20b")
 target("20c")
     set_kind("binary")
     add_files("20c.cc")
+
+target("21a")
+    set_kind("binary")
+    add_files("21a.cc")
+
+target("21b")
+    set_kind("binary")
+    add_files("21b.cc")
