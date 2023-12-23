@@ -6,6 +6,7 @@
 #include <limits>
 #include <map>
 #include <numeric>
+#include <queue>
 #include <set>
 #include <string>
 #include <tuple>
